@@ -1,0 +1,36 @@
+server:
+  port: 8086
+project:
+  version: 1.0
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.springframework.web: ERROR
+spring:
+  application:
+    name: user-roles-sample
+  #settings of postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5436/sample_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      properties:
+        hibernate:
+          default_schema:public
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    default-schema: public
+  openapi:
+    path: /v3/api-docs
+  springdoc:
+    swagger-ui:
+      enabled: true
+
+

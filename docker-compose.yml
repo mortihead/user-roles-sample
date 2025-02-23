@@ -1,0 +1,15 @@
+services:
+  pg_db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=sample_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"      	
+
+volumes:
+  db:
