@@ -34,13 +34,8 @@ public class CarService {
     private final CarRepository carRepository;
 
     public List<Car> findAll(HttpServletRequest request) {
-        //  User user = userService.getUser(request);
-        String uid = request.getHeader(USER_ID_HTTP_HEADER_NAME);
-        if (Strings.isNullOrEmpty(uid)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Anonymous access denied!");
-        }
-        User user = userRepository.findByUid(uid)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found with uid: " + uid));
+        User user = userService.getUser(request);
+
         if (userService.isToyotaManager(user)) {
             return carRepository.findByBrand(BrandEnum.TOYOTA.getBrandName());
         } else if (userService.isNissanManager(user)) {

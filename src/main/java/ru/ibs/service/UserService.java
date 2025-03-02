@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import ru.ibs.entity.User;
 import ru.ibs.enums.RoleEnum;
-import ru.ibs.repository.RoleRepository;
 import ru.ibs.repository.UserRepository;
 
 import java.util.concurrent.ExecutionException;
@@ -27,9 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class UserService {
     public static final String USER_ID_HTTP_HEADER_NAME = "USER_UID";
 
-
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     private LoadingCache<String, User> userCache;
 
@@ -37,7 +34,7 @@ public class UserService {
     public void initCache() {
         userCache = CacheBuilder.newBuilder()
                 .maximumSize(100) // Максимальное количество записей в кэше
-                .expireAfterWrite(10, TimeUnit.MINUTES) // Время жизни записи в кэше
+                .expireAfterWrite(1, TimeUnit.HOURS) // Время жизни записи в кэше
                 .build(new CacheLoader<>() {
                     @Override
                     public User load(String uid) {
@@ -56,7 +53,7 @@ public class UserService {
     public User getUser(HttpServletRequest request) {
         String userUid = request.getHeader(USER_ID_HTTP_HEADER_NAME);
         if (Strings.isNullOrEmpty(userUid))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not specified!");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Anonymous access denied!");
         try {
             return userCache.get(userUid);
         } catch (ExecutionException e) {
